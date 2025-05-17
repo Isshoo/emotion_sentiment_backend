@@ -213,7 +213,7 @@ class ProcessService:
 
     def get_models_list(self):
         """Get lightweight list of models without loading file data"""
-        models = self.db.query(Model).order_by(Model.created_at.desc()).all()
+        models = self.db.query(Model).all()
         return [{
             "id": m.id,
             "name": m.name,
