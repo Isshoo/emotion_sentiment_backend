@@ -29,12 +29,12 @@ class ProcessController:
             if "error" in result:
                 return jsonify(result), 400
 
-            allowed_labels = {"joy", "trust", "shock",
-                              "netral", "fear", "sadness", "anger"}
-            test_counts = result.get("test_per_label", {})
+            # allowed_labels = {"joy", "trust", "shock",
+            #                   "netral", "fear", "sadness", "anger"}
+            # test_counts = result.get("test_per_label", {})
 
-            if any(test_counts.get(label, 0) == 0 for label in allowed_labels):
-                return jsonify({"error": "There is a label that is empty after splitting"}), 400
+            # if any(test_counts.get(emotion, 0) == 0 for emotion in allowed_labels):
+            #     return jsonify({"error": "There is a label that is empty after splitting"}), 400
 
             return jsonify(result)
 
