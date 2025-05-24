@@ -115,7 +115,8 @@ class PreprocessService:
         if filter_type == "old":
             query = query.filter(PreprocessedDataset.is_trained == True)
         elif filter_type == "new":
-            query = query.filter(PreprocessedDataset.is_trained == False)
+            query = query.filter(PreprocessedDataset.is_trained == False).order_by(
+                PreprocessedDataset.inserted_at.desc())
         elif filter_type == "unprocessed":
             query = query.filter(PreprocessedDataset.is_preprocessed == False)
         elif filter_type == "processed":

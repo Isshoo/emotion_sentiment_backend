@@ -200,9 +200,9 @@ class ProcessService:
             "training_time": model.train_time
         }
 
-    def get_model(self, model_id):
+    def get_model(self):
         """Retrieve model details with lazy loading of file data"""
-        model = self.db.query(Model).filter_by(id=model_id).first()
+        model = self.db.query(Model).order_by(Model.created_at.desc()).first()
         if not model:
             return None
 
@@ -257,9 +257,9 @@ class ProcessService:
 
     # Add these methods to the ProcessService class
 
-    def get_prior_probabilities(self, model_id):
+    def get_prior_probabilities(self):
         """Get prior probabilities for a model"""
-        model = self.db.query(Model).filter_by(id=model_id).first()
+        model = self.db.query(Model).order_by(Model.created_at.desc()).first()
         if not model or not model.prior_probabilities_path:
             return None
 
@@ -269,9 +269,9 @@ class ProcessService:
         except:
             return None
 
-    def get_word_probabilities(self, model_id):
+    def get_word_probabilities(self):
         """Get word probabilities for a model"""
-        model = self.db.query(Model).filter_by(id=model_id).first()
+        model = self.db.query(Model).order_by(Model.created_at.desc()).first()
         if not model or not model.word_probabilities_path:
             return None
 
@@ -280,9 +280,10 @@ class ProcessService:
         except:
             return None
 
-    def get_tfidf_details(self, model_id):
+    def get_tfidf_details(self):
         """Get TF-IDF details for a model"""
-        model = self.db.query(Model).filter_by(id=model_id).first()
+        # ambil model paling terakhir
+        model = self.db.query(Model).order_by(Model.created_at.desc()).first()
         if not model or not model.tfidf_details_path:
             return None
 
@@ -291,20 +292,25 @@ class ProcessService:
         except:
             return None
 
-    def get_bert_lexicon_details(self, model_id):
-        """Get BERT lexicon details for a model"""
-        model = self.db.query(Model).filter_by(id=model_id).first()
+    def get_bert_lexicon_details(self):
+        """Get BERT lexicon details for a model and remove 'kata_terkait' column"""
+        model = self.db.query(Model).order_by(Model.created_at.desc()).first()
         if not model or not model.bert_lexicon_details_path:
             return None
 
         try:
-            return pd.read_csv(model.bert_lexicon_details_path).to_dict('records')
-        except:
+            df = pd.read_csv(model.bert_lexicon_details_path)
+            # Hapus kolom 'kata_terkait' jika ada
+            if 'kata_terkait' in df.columns:
+                df = df.drop(columns=['kata_terkait'])
+            return df.to_dict('records')
+        except Exception as e:
+            print(f"Error reading BERT lexicon details: {e}")
             return None
 
-    def get_evaluation_metrics(self, model_id):
+    def get_evaluation_metrics(self):
         """Get evaluation metrics for a model"""
-        model = self.db.query(Model).filter_by(id=model_id).first()
+        model = self.db.query(Model).order_by(Model.created_at.desc()).first()
         if not model or not model.evaluation_metrics_path:
             return None
 
@@ -314,9 +320,9 @@ class ProcessService:
         except:
             return None
 
-    def get_predict_results(self, model_id, page=1, limit=10):
+    def get_predict_results(self, page=1, limit=10):
         """Get prediction results with pagination and filtering"""
-        model = self.db.query(Model).filter_by(id=model_id).first()
+        model = self.db.query(Model).order_by(Model.created_at.desc()).first()
         if not model or not model.predict_results_path:
             return None
 

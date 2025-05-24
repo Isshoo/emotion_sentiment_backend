@@ -29,13 +29,6 @@ class ProcessController:
             if "error" in result:
                 return jsonify(result), 400
 
-            # allowed_labels = {"joy", "trust", "shock",
-            #                   "netral", "fear", "sadness", "anger"}
-            # test_counts = result.get("test_per_label", {})
-
-            # if any(test_counts.get(emotion, 0) == 0 for emotion in allowed_labels):
-            #     return jsonify({"error": "There is a label that is empty after splitting"}), 400
-
             return jsonify(result)
 
         except Exception as e:
@@ -80,38 +73,38 @@ class ProcessController:
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
-    def get_model(self, model_id):
+    def get_model(self):
         try:
-            result = self.process_service.get_model(model_id)
+            result = self.process_service.get_model()
             if not result:
                 return jsonify({"error": "Model not found"}), 404
             return jsonify(result)
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
-    def get_model_evaluation(self, model_id):
+    def get_model_evaluation(self):
         try:
-            result = self.process_service.get_evaluation_metrics(model_id)
+            result = self.process_service.get_evaluation_metrics()
             if not result:
                 return jsonify({"error": "Evaluation not found"}), 404
             return jsonify(result)
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
-    def fetch_prob_prior(self, model_id):
+    def fetch_prob_prior(self):
         try:
-            result = self.process_service.get_prior_probabilities(model_id)
+            result = self.process_service.get_prior_probabilities()
             if not result:
                 return jsonify({"error": "Prior probabilities not found"}), 404
             return jsonify(result)
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
-    def fetch_tfidf_stats(self, model_id):
+    def fetch_tfidf_stats(self):
         try:
             page = int(request.args.get("page", 1))
             limit = int(request.args.get("limit", 10))
-            result = self.process_service.get_tfidf_details(model_id)
+            result = self.process_service.get_tfidf_details()
             if not result:
                 return jsonify({"error": "TFIDF stats not found"}), 404
 
@@ -130,11 +123,11 @@ class ProcessController:
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
-    def fetch_prob_condition(self, model_id):
+    def fetch_prob_condition(self):
         try:
             page = int(request.args.get("page", 1))
             limit = int(request.args.get("limit", 10))
-            result = self.process_service.get_word_probabilities(model_id)
+            result = self.process_service.get_word_probabilities()
             if not result:
                 return jsonify({"error": "Word probabilities not found"}), 404
 
@@ -153,11 +146,11 @@ class ProcessController:
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
-    def fetch_bert_lexicon(self, model_id):
+    def fetch_bert_lexicon(self):
         try:
             page = int(request.args.get("page", 1))
             limit = int(request.args.get("limit", 10))
-            result = self.process_service.get_bert_lexicon_details(model_id)
+            result = self.process_service.get_bert_lexicon_details()
             if not result:
                 return jsonify({"error": "BERT lexicon details not found"}), 404
 
@@ -176,13 +169,13 @@ class ProcessController:
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
-    def fetch_predict_results(self, model_id):
+    def fetch_predict_results(self, ):
         try:
             page = int(request.args.get("page", 1))
             limit = int(request.args.get("limit", 10))
 
             result = self.process_service.get_predict_results(
-                model_id, page, limit)
+                page, limit)
             if not result:
                 return jsonify({"error": "Predict results not found"}), 404
 
